@@ -21,7 +21,6 @@
             <td> <a href="{{route('leads.show',$lead)}}"> {{ $lead->company }}          </a></td>
             <td> <a href="{{route('leads.show',$lead)}}"> {{ $lead->name }}             </a> </td>
             <td class="hide-mobile"> <a href="mailto:{{$lead->email}}" target="_blank"> {{ $lead->email }}  </a> </td>
-            <td class="hide-mobile"> {{ $lead->tagsString(", ") }}  </td>
             <td> {{ nameOrDash( $lead->team ) }}</td>
             <td> {{ nameOrDash( $lead->user ) }}</td>
             <td> <a class="label lead-status-{{ $lead->statusName() }}" href="{{ route('leads.show', $lead) }}">

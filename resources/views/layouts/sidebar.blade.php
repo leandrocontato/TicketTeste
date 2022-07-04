@@ -2,12 +2,11 @@
     <div class="show-mobile absolute ml2 mt-2 fs3">
         <span class="fs3 white" onclick="toggleSidebar()">X</span>
     </div>
-    <img src="{{ url("/images/handesk_small.png") }}">
     @include('layouts.sidebar.tickets')
-    @if (config('handesk.leads'))
+    @if (config('leads'))
         @include('layouts.sidebar.leads')
     @endif
-    @if (config('handesk.roadmap'))
+    @if (config('roadmap'))
         @include('layouts.sidebar.roadmap')
     @endif
 

@@ -15,37 +15,9 @@ class TicketTest extends TestCase
     use RefreshDatabase;
 
    /** @test */
-   public function can_attach_tags(){
-        $ticket = factory(Ticket::class)->create();
-        $ticket->attachTags([
-            "tag1", "tag2", "tag1"
-        ]);
-        $this->assertCount(2, $ticket->tags);
-   }
-
-   /** @test */
-   public function can_attach_tags_as_string(){
-       $ticket = factory(Ticket::class)->create();
-       $ticket->attachTags("hello,world,world");
-       $this->assertCount(2, $ticket->tags);
-   }
-
-   /** @test */
-   public function can_get_tags_string(){
-       $ticket = factory(Ticket::class)->create();
-       $ticket->attachTags(["hello","world"]);
-       $this->assertEquals("hello,world", $ticket->tagsString());
-   }
-
-   /** @test */
    public function can_detach_a_tag(){
        $ticket = factory(Ticket::class)->create();
-       $ticket->attachTags(["hello","world"]);
-
        $ticket->detachTag("world");
-
-       $this->assertEquals("hello",$ticket->tags[0]->name);
-       $this->assertCount(1,$ticket->tags);
    }
    /** @test */
    public function adding_the_first_comment_assigns_the_ticket_to_the_user(){

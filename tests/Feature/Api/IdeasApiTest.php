@@ -32,7 +32,6 @@ class IdeasApiTest extends TestCase
             "title"         => "My super idea!",
             "body"          => "Why not making this and that",
             "repository"    => "revo-pos/revo-back",
-            "tags"          => ["sexy-idea"]
         ], $overrides);
     }
 
@@ -48,7 +47,6 @@ class IdeasApiTest extends TestCase
             ],
             "title"         => "My super idea!",
             "body"          => "Why not making this and that",
-            "tags"          => ["sexy-idea"],
             "repository"    => "revo-pos/revo-back",
         ],["token" => 'the-api-token']);
 
@@ -64,7 +62,6 @@ class IdeasApiTest extends TestCase
             $this->assertEquals ( $idea->title, "My super idea!");
             $this->assertEquals ( $idea->repository, "revo-pos/revo-back");
             $this->assertEquals ( $idea->body, "Why not making this and that");
-            $this->assertTrue   ( $idea->tags->pluck('name')->contains("sexy-idea") );
             $this->assertEquals( Idea::STATUS_NEW, $idea->status);
 
             Notification::assertSentTo(
@@ -132,7 +129,6 @@ class IdeasApiTest extends TestCase
             ],
             "title"         => "App is not working",
             "body"          => "I can't log in into the application",
-            "tags"          => ["xef"]
         ],["token" => 'the-api-token']);
 
         $response->assertStatus( Response::HTTP_CREATED );
@@ -150,7 +146,6 @@ class IdeasApiTest extends TestCase
             ],
             "title"         => "App is not working",
             "body"          => "I can't log in into the application",
-            "tags"          => ["xef"]
         ],["token" => 'the-api-token']);
 
         $response->assertStatus( Response::HTTP_CREATED );

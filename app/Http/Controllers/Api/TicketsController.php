@@ -37,10 +37,7 @@ class TicketsController extends ApiController
         ]);
 
         $ticket = Ticket::createAndNotify(
-            request('requester'),
-            strip_tags(request('title')),
-            strip_tags(request('body')),
-            request('tags')
+            request('requester')
         );
 
         if (request('team_id')) {

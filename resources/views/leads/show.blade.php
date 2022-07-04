@@ -38,7 +38,6 @@
 @endsection
 
 @section('scripts')
-    @include('components.js.taggableInput', ["el" => "tags", "endpoint" => "leads", "object" => $lead])
     <script>
         function setStatusAndSubmit(new_status){
             $("#new_status").val(new_status);

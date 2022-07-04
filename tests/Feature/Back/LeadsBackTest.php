@@ -130,7 +130,6 @@ class LeadsBackTest extends TestCase
             "name"  => "Jason mandela",
             "company"  => "Wayne",
             "team_id" => $team->id,
-            "tags" => "first tag,second tag"
         ]);
 
         $response->assertStatus(Response::HTTP_FOUND);
@@ -141,7 +140,6 @@ class LeadsBackTest extends TestCase
             $this->assertEquals("justin@biber.com", $lead->email);
             $this->assertEquals(Lead::STATUS_NEW, $lead->status);
             $this->assertEquals($team->id, $lead->team->id);
-            $this->assertTrue($lead->tags->pluck('name')->contains('second tag'));
         });
     }
 

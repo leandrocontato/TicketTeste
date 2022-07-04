@@ -14,13 +14,10 @@ class LeadsController extends ApiController
         $this->validate(request(), [
             'name'  => 'required|min:3',
             'email' => 'required|email',
-            'tags'  => 'required',
         ]);
 
         $lead = Lead::where('email', request('email'))->orWhere('phone', request('phone'))->first();
         if ($lead) {
-            $lead->attachTags(request('tags'));
-
             return $this->respond(['id' => $lead->id], Response::HTTP_CREATED);
         }
 
@@ -37,7 +34,7 @@ class LeadsController extends ApiController
             'address'     => request('address'),
             'postal_code' => request('postal_code'),
             'body'        => request('body'),
-        ])->attachTags(request('tags'));
+        ]);
 
         $lead->subscribeToMailchimp();
 

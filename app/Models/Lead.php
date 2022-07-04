@@ -26,11 +26,6 @@ class Lead extends BaseModel
         return $this->belongsTo(User::class);
     }
 
-    public function tags()
-    {
-        return $this->morphToMany(Tag::class, 'taggable');
-    }
-
     public function attachments()
     {
         return $this->morphMany(Attachment::class, 'attachable');

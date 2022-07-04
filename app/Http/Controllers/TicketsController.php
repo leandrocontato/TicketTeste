@@ -34,7 +34,6 @@ class TicketsController extends Controller
             'body'      => 'required',
             'team_id'   => 'nullable|exists:teams,id',
         ]);
-        $ticket = Ticket::createAndNotify(request('requester'), request('title'), request('body'), request('tags'));
         $ticket->updateStatus(request('status'));
 
         if (request('team_id')) {

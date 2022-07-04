@@ -16,13 +16,12 @@ class AgentTicketsTest extends TestCase
 {
     use RefreshDatabase;
 
-
     /** @test */
     public function can_login()
     {
-        factory(User::class)->create(['email' => 'admin@handesk.io', 'password' => bcrypt('the-password'), 'token' => 'agent-token', 'admin' => true]);
+        factory(User::class)->create(['email' => 'leandro.miranda@j2aconsultoria.com', 'password' => bcrypt('the-password'), 'token' => 'agent-token', 'admin' => true]);
 
-        $response = $this->post("api/agent/login", ["email" => 'admin@handesk.io', 'password' => 'the-password']);
+        $response = $this->post("api/agent/login", ["email" => 'leandro.miranda@j2aconsultoria.com', 'password' => 'the-password']);
 
         $response->assertJsonStructure([
             "data" => [
@@ -82,7 +81,7 @@ class AgentTicketsTest extends TestCase
 
         $response->assertJsonStructure([
             "data" => [
-                "id" 
+                "id"
             ]
         ]);
 
@@ -104,7 +103,7 @@ class AgentTicketsTest extends TestCase
 
         $response->assertJsonStructure([
             "data" => [
-                "id" 
+                "id"
             ]
         ]);
 

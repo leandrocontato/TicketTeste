@@ -6,7 +6,6 @@ use App\Authenticatable\Admin;
 use App\Authenticatable\Assistant;
 use App\Events\TicketCommented;
 use App\Events\TicketStatusUpdated;
-use App\Notifications\RateTicket;
 use App\Notifications\TicketAssigned;
 use App\Notifications\TicketCreated;
 use App\Notifications\TicketEscalated;
@@ -19,7 +18,7 @@ use Illuminate\Support\Str;
 
 class Ticket extends BaseModel
 {
-    use SoftDeletes, Taggable, Assignable, Subscribable, Rateable;
+    use SoftDeletes, Taggable, Assignable, Subscribable;
 
     const STATUS_NEW     = 1;
     const STATUS_OPEN    = 2;
@@ -34,7 +33,7 @@ class Ticket extends BaseModel
     const PRIORITY_HIGH      = 3;
     const PRIORITY_BLOCKER   = 4;
 
-    public static function createAndNotify($requester, $title, $body, $tags)
+    public static function createAndNotify($requester, $title, $body)
     {
         $requester = Requester::findOrCreate($requester['name'] ?? 'Unknown', $requester['email'] ?? null);
         $ticket    = $requester->tickets()->create([
@@ -42,7 +41,7 @@ class Ticket extends BaseModel
             'body'         => $body,
             'public_token' => Str::random(24),
             'team_id'      => Settings::defaultTeamId(),
-        ])->attachTags($tags);
+        ]);
         tap(new TicketCreated($ticket), function ($newTicketNotification) use ($ticket) {
             Admin::notifyAll($newTicketNotification);
             if ($ticket->team) {
@@ -110,11 +109,6 @@ class Ticket extends BaseModel
     public function events()
     {
         return $this->hasMany(TicketEvent::class)->latest();
-    }
-
-    public function tags()
-    {
-        return $this->morphToMany(Tag::class, 'taggable');
     }
 
     public function attachments()
@@ -222,9 +216,6 @@ class Ticket extends BaseModel
     {
         $this->update(['status' => $status, 'updated_at' => Carbon::now()]);
         TicketEvent::make($this, 'Status updated: '.$this->statusName());
-        if ($status == Ticket::STATUS_SOLVED && ! $this->rating && config('handesk.sendRatingEmail')) {
-            $this->requester->notify((new RateTicket($this))->delay(now()->addMinutes(60)));
-        }
     }
 
     public function updatePriority($priority)
@@ -366,7 +357,7 @@ class Ticket extends BaseModel
             'requester_id' => $this->requester_id,
             'title'        => $this->title,
             'body'         => $this->body,
-        ])->attachTags(['ticket']);
+        ]);
         TicketEvent::make($this, "Idea created #{$idea->id}");
         App::setLocale((new TicketLanguageDetector($this))->detect());
         $this->addComment(auth()->user(), __('idea.fromTicket'), self::STATUS_SOLVED);

@@ -27,9 +27,7 @@ class TicketTest extends TestCase
         $this->withoutExceptionHandling();
         $user = factory(User::class)->create(["admin" => true]);
         $user->tickets()->create(factory(Ticket::class)->make()->toArray());
-
         $response = $this->actingAs($user)->get('tickets');
-
         $response->assertStatus(Response::HTTP_OK);
         $response->assertSee( $user->tickets->first()->requester->name);
     }
@@ -39,9 +37,7 @@ class TicketTest extends TestCase
         $user = factory(User::class)->create();
         $user->tickets()->create(factory(Ticket::class)->make()->toArray());
         $ticket = $user->tickets->first();
-
         $response = $this->actingAs($user)->get("tickets/{$ticket->id}");
-
         $response->assertStatus(Response::HTTP_OK);
         $response->assertSee( $ticket->requester->name);
     }
@@ -56,9 +52,7 @@ class TicketTest extends TestCase
         $ticket = $team->tickets()->create(
             factory(Ticket::class)->make()->toArray()
         );
-
         $response = $this->actingAs($user)->get("tickets/{$ticket->id}");
-
         $response->assertStatus(Response::HTTP_OK);
         $response->assertSee( $ticket->requester->name);
     }
@@ -67,9 +61,7 @@ class TicketTest extends TestCase
     public function user_can_not_see_non_team_ticket(){
         $user   = factory(User::class)->create();
         $ticket = factory(Ticket::class)->create();
-
         $response = $this->actingAs($user)->get("tickets/{$ticket->id}");
-
         $response->assertStatus(Response::HTTP_FORBIDDEN);
     }
 
@@ -77,9 +69,7 @@ class TicketTest extends TestCase
     public function admin_can_see_non_team_ticket(){
         $user   = factory(User::class)->create(["admin" => true]);
         $ticket = factory(Ticket::class)->create();
-
         $response = $this->actingAs($user)->get("tickets/{$ticket->id}");
-
         $response->assertStatus(Response::HTTP_OK);
         $response->assertSee( $ticket->requester->name);
     }
@@ -91,9 +81,7 @@ class TicketTest extends TestCase
         $team   = factory(Team::class)->create();
         $ticket = factory(Ticket::class)->create(["user_id" => $user->id, "team_id" => $team->id]);
         $this->assertCount(0, $ticket->comments);
-
         $response = $this->actingAs($user)->post("tickets/{$ticket->id}/comments",["body" => "This is my comment"]);
-
         $response->assertStatus(Response::HTTP_FOUND);
         $this->assertCount(1, $ticket->fresh()->comments);
         tap($ticket->fresh()->comments->first(), function($comment) use($user, $ticket){
@@ -118,10 +106,8 @@ class TicketTest extends TestCase
         $team   = factory(Team::class)->create();
         $ticket = factory(Ticket::class)->create(["user_id" => $user->id, "team_id" => $team->id]);
         $this->assertCount(0, $ticket->comments);
-
         $response = $this->actingAs($user)->post("tickets/{$ticket->id}/comments",["body" => "This is my comment", "private" => true]);
         $response->assertStatus(Response::HTTP_FOUND);
-
         $this->assertCount(0, $ticket->fresh()->comments);
         $this->assertCount(1, $ticket->fresh()->commentsAndNotes);
 
@@ -133,9 +119,7 @@ class TicketTest extends TestCase
         $user   = factory(User::class)->create(["admin" => true]);
         $team   = factory(Team::class)->create();
         $ticket = factory(Ticket::class)->create();
-
         $response = $this->actingAs($user)->post("tickets/{$ticket->id}/assign",["team_id" => $team->id]);
-
         $response->assertStatus(Response::HTTP_FOUND);
         $this->assertEquals($team->id, $ticket->fresh()->team_id);
     }
@@ -146,9 +130,7 @@ class TicketTest extends TestCase
         $user   = factory(User::class)->create(["admin" => true]);
         $user2  = factory(User::class)->create();
         $ticket = factory(Ticket::class)->create();
-
         $response = $this->actingAs($user)->post("tickets/{$ticket->id}/assign",["user_id" => $user2->id]);
-
         $response->assertStatus(Response::HTTP_FOUND);
         $this->assertEquals($user2->id, $ticket->fresh()->user_id);
     }
@@ -175,24 +157,14 @@ class TicketTest extends TestCase
     public function can_add_a_tag(){
         $user   = factory(User::class)->create();
         $ticket = factory(Ticket::class)->create();
-
-        $response = $this->actingAs($user)->post("tickets/{$ticket->id}/tags", ["tag" => "Hello world"]);
-
         $response->assertStatus(Response::HTTP_OK);
-        $this->assertCount(1, $ticket->fresh()->tags);
     }
 
     /** @test */
     public function can_detach_a_tag(){
         $user   = factory(User::class)->create();
         $ticket = factory(Ticket::class)->create();
-        $ticket->attachTags(["hello","world"]);
-        $this->assertCount(2, $ticket->tags);
-
-        $response = $this->actingAs($user)->delete("tickets/{$ticket->id}/tags/hello");
-
         $response->assertStatus(Response::HTTP_OK);
-        $this->assertCount(1, $ticket->fresh()->tags);
     }
 
     /** @test */
@@ -205,7 +177,6 @@ class TicketTest extends TestCase
             "requester" => ["name" => "Justin", "email" => "justin@biber.com"],
             "title" => "Hello",
             "body" => "Baby",
-            "tags" =>"first tag,second tag",
             "status" => Ticket::STATUS_OPEN,
             "team_id" => $team->id,
         ]);
@@ -219,21 +190,17 @@ class TicketTest extends TestCase
             $this->assertEquals("justin@biber.com", $ticket->requester->email);
             $this->assertEquals(Ticket::STATUS_OPEN, $ticket->status);
             $this->assertEquals($team->id, $ticket->team->id);
-            $this->assertTrue($ticket->tags->pluck('name')->contains('second tag'));
         });
     }
-
 
     /** @test */
     public function can_merge_tickets(){
         Notification::fake();
         $user    = factory(User::class)->states(['admin'])->create();
         $tickets = factory(Ticket::class, 4)->create();
-
         $this->actingAs($user);
         request()->merge(['ticket_id' => 1]);
         (new MergeTickets)->handle(Ticket::whereIn('id', [2, 3])->get());
-
         $this->assertEquals(Ticket::STATUS_MERGED, $tickets[1]->fresh()->status);
         $this->assertEquals(Ticket::STATUS_MERGED, $tickets[2]->fresh()->status);
     }
@@ -244,9 +211,7 @@ class TicketTest extends TestCase
         $user        = factory(User::class)->create();
         $assistant   = factory(Assistant::class)->create();
         $ticket      = factory(Ticket::class)->create();
-
         $response = $this->actingAs($user)->post("tickets/{$ticket->id}/escalate");
-
         $response->assertStatus( Response::HTTP_FOUND );
         $this->assertEquals(1, $ticket->fresh()->level);
 
@@ -263,9 +228,7 @@ class TicketTest extends TestCase
     public function can_unescalate_ticket(){
         $user   = factory(User::class)->create();
         $ticket = factory(Ticket::class)->create(["level" => 1]);
-
         $response = $this->actingAs($user)->delete("tickets/{$ticket->id}/escalate");
-
         $response->assertStatus( Response::HTTP_FOUND );
         $this->assertEquals(0, $ticket->fresh()->level);
     }

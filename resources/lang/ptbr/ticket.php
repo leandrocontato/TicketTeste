@@ -22,7 +22,6 @@ return [
     'commentAs'  => 'Comentar como',
     'assign'     => 'Atribuir',
     'status'     => 'Status',
-    'tag'        => 'Tag|Tags',
 
     'new'                => 'Novo',
     'open'               => 'Abrir',
@@ -51,8 +50,6 @@ return [
     'normal'             => 'Normal*',
     'high'               => 'Alto*',
     'blocker'            => 'Clítico*',
-    'thanksForTheRating' => 'Obrigado*',
-    'rated'              => 'Avaliado*',
     'ticketType'         => 'Ticket types*',
     'needSubject'        => 'Subject needed*',
 ];

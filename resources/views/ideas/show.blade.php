@@ -17,23 +17,12 @@
             </div>
         @endcan
     </div>
-
-    <div class="comment new-comment">
-        {!! nl2br( strip_tags($idea->body)) !!}
-    </div>
-
     <div class="comment new-comment">
         <table class="maxw600 no-padding">
-            <tr><td> {{ trans_choice('ticket.tag',2) }}</td><td colspan="4"> <input id="tags" name="tags" value="{{ $idea->tagsString() }}"></td></tr>
             <tr><td> {{ __('idea.repository') }} </td><td> {{ $idea->repositoryName() }} </td></tr>
             <tr><td> {{ __('idea.developmentEffort') }}</td><td><input name="development_effort" type="range" min="0" max="10" value="{{$idea->development_effort}}"></td></tr>
             <tr><td> {{ __('idea.salesImpact') }}</td><td><input name="sales_impact" type="range" min="0" max="10" value="{{$idea->sales_impact}}"></td></tr>
             <tr><td> {{ __('idea.currentImpact') }}</td><td><input name="current_impact" type="range" min="0" max="10" value="{{$idea->current_impact}}"></td></tr>
         </table>
     </div>
-@endsection
-
-
-@section('scripts')
-    @include('components.js.taggableInput', ["el" => "tags", "endpoint" => "ideas", "object" => "{{$idea->id}}"])
 @endsection

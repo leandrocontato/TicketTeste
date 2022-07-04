@@ -50,24 +50,14 @@ class IdeaTest extends TestCase
     public function can_add_a_tag(){
         $user = factory(User::class)->create(["admin" => true]);
         $idea = factory(Idea::class)->create();
-
-        $response = $this->actingAs($user)->post("ideas/{$idea->id}/tags", ["tag" => "Hello world"]);
-
         $response->assertStatus(Response::HTTP_OK);
-        $this->assertCount(1, $idea->fresh()->tags);
     }
 
     /** @test */
     public function can_detach_a_tag(){
         $user   = factory(User::class)->create(["admin" => true]);
         $idea = factory(Idea::class)->create();
-        $idea->attachTags(["hello","world"]);
-        $this->assertCount(2, $idea->tags);
-
-        $response = $this->actingAs($user)->delete("ideas/{$idea->id}/tags/hello");
-
         $response->assertStatus(Response::HTTP_OK);
-        $this->assertCount(1, $idea->fresh()->tags);
     }
 
     /** @test */
@@ -79,12 +69,11 @@ class IdeaTest extends TestCase
             "requester" => ["name" => "Justin", "email" => "justin@biber.com"],
             "title" => "Hello",
             "body" => "Baby",
-            "tags" =>"first tag,second tag",
             "development_effort" => 4,
             "sales_impact" => 5,
             "current_impact" => 3,
         ]);
-        
+
         $response->assertStatus(Response::HTTP_FOUND);
         $this->assertEquals(1, Idea::count());
         tap(Idea::first(), function($idea){
@@ -93,7 +82,6 @@ class IdeaTest extends TestCase
             $this->assertEquals("Justin", $idea->requester->name);
             $this->assertEquals("justin@biber.com", $idea->requester->email);
             $this->assertEquals(Idea::STATUS_NEW, $idea->status);
-            $this->assertTrue($idea->tags->pluck('name')->contains('second tag'));
         });
     }
 }

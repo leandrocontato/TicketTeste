@@ -26,7 +26,6 @@ class TeamTicketTest extends TestCase
             ],
             "title"         => "App is not working",
             "body"          => "I can't log in into the application",
-            "tags"          => ["xef"]
         ], $overrides);
     }
 
@@ -62,7 +61,6 @@ class TeamTicketTest extends TestCase
             ],
             "title"         => "App is not working",
             "body"          => "I can't log in into the application",
-            "tags"          => ["xef"],
             "team_id"       => $team->id
         ],["token" => 'the-api-token']);
 
@@ -77,7 +75,6 @@ class TeamTicketTest extends TestCase
             });
             $this->assertEquals ( $ticket->title, "App is not working");
             $this->assertEquals ( $ticket->body, "I can't log in into the application");
-            $this->assertTrue   ( $ticket->tags->pluck('name')->contains("xef") );
             $this->assertEquals( Ticket::STATUS_NEW, $ticket->status);
             $this->assertTrue( $team->tickets->contains($ticket) );
 
@@ -104,7 +101,6 @@ class TeamTicketTest extends TestCase
             ],
             "title"         => "App is not working",
             "body"          => "I can't log in into the application",
-            "tags"          => ["xef"],
             "team_id"       => null
         ],["token" => 'the-api-token']);
 

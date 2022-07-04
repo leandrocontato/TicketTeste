@@ -18,7 +18,6 @@
     <div class="comment new-comment">
         <table class="maxw600 no-padding">
             <tr><td class="w20">{{ __('ticket.subject') }}: </td>     <td><input name="title" class="w100" required/></td></tr>
-            <tr><td>{{ trans_choice('ticket.tag', 2)}}: </td><td><input     name="tags" id="tags"/></td></tr>
             <tr><td>{{ __('ticket.comment')         }}: </td><td><textarea  name="body" required></textarea></td></tr>
             @include('components.assignTeamField')
             <tr><td>{{ __('ticket.status') }}: </td><td>
@@ -32,9 +31,4 @@
         </table>
         {{ Form::close() }}
     </div>
-@endsection
-
-
-@section('scripts')
-    @include('components.js.taggableInput', ["el" => "tags", "endpoint" => "tickets", "object" => null])
 @endsection

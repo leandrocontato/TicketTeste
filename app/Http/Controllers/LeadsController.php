@@ -42,7 +42,6 @@ class LeadsController extends Controller
             'phone' => 'nullable|unique:leads',
         ]);
 
-        $lead = Lead::create(request()->except(['tags', 'team_id']))->attachTags(request('tags'));
         if (request('team_id')) {
             $lead->assignToTeam(request('team_id'));
         }

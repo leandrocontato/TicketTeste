@@ -35,10 +35,9 @@ class CreateTicketsFromNewEmailsTest extends TestCase
             $this->assertEquals("bruce@wayne.com", $ticket->requester->email);
             $this->assertEquals("I'm batman", $ticket->title);
             $this->assertEquals("Why so serious", $ticket->body);
-            $this->assertEquals("email", $ticket->tags->first()->name);
         });
     }
-    
+
     /** @test */
     public function does_create_comments_for_new_comment_emails(){
         Notification::fake();
@@ -46,7 +45,6 @@ class CreateTicketsFromNewEmailsTest extends TestCase
         $agent                              = factory(User::class)     ->create(["email" => "tony@stark.com"]);
         $ticketWithCommentRequester         = factory(Requester::class)->create(["email" => "peter@parker.com"]);
         $ticketThatWillGetTheCommentByMail  = factory(Ticket::class)   ->create(["id" => 18, "requester_id" => $ticketWithCommentRequester ]);
-        $ticketReplyBody = "The email reply##- Please type your reply above this line -##</span>\r\n\r\nA new comment for the ticket\r\n\r\nAaaaand another one\r\n\r\nSee the ticket\r\nThank you for using our application!\r\n\r\nticket-id:18.</span>\r\n\r\nRegards,\r\nHandesk\r\n\r\nIf you’re having trouble clicking the \"See the ticket\" button, copy and paste the URL below into your web browser: http://handesk.dev/requester/tickets/eQDXxiSRwPwS0tFGpj9jQJH2\r\n\r\n© 2017 Handesk. All rights reserved. ticket-id:19.";
         $fakePop->messages = [
             new FakeIncomingMail(["name" => "Jack Sparrow", "email" => "tony@stark.com"], "Reply to of ticket", $ticketReplyBody    ),
             new FakeIncomingMail(["name" => "Peter Parker", "email" => "peter@parker.com"], "Reply to of ticket 2", $ticketReplyBody    ),
@@ -79,7 +77,6 @@ class CreateTicketsFromNewEmailsTest extends TestCase
         $ticketThatWillGetTheCommentByMail  = factory(Ticket::class)   ->create(["id" => 18, "requester_id" => $ticketWithCommentRequester, "status" => Ticket::STATUS_SOLVED ]);
 
         $this->assertEquals(Ticket::STATUS_SOLVED, $ticketThatWillGetTheCommentByMail->fresh()->status);
-        $ticketReplyBody = "The email reply##- Please type your reply above this line -##</span>\r\n\r\nA new comment for the ticket\r\n\r\nAaaaand another one\r\n\r\nSee the ticket\r\nThank you for using our application!\r\n\r\nticket-id:18.</span>\r\n\r\nRegards,\r\nHandesk\r\n\r\nIf you’re having trouble clicking the \"See the ticket\" button, copy and paste the URL below into your web browser: http://handesk.dev/requester/tickets/eQDXxiSRwPwS0tFGpj9jQJH2\r\n\r\n© 2017 Handesk. All rights reserved. ticket-id:19.";
         $fakePop->messages = [
             new FakeIncomingMail(["name" => "Peter Parker", "email" => "peter@parker.com"], "Reply to of ticket 2", $ticketReplyBody    ),
         ];

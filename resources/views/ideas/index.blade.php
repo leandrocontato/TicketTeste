@@ -30,7 +30,6 @@
                 <td> <a href="{{route('ideas.show', $idea)}}">{{ $idea->title }}</a></td>
                 <td> {{ $idea->requester->name      }}</td>
                 <td> {{ $idea->repositoryName() }} </td>
-                <td> {{ $idea->tagsString() }}</td>
                 <td> {{ $idea->created_at->diffForHumans() }}</td>
                 <td>
                     @can('update', $idea)

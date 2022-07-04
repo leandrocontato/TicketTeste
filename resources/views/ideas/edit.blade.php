@@ -16,7 +16,6 @@
         <table>
         <tr><td> <input class="w100" name="title" value="{{ $idea->title }}"></td></tr>
         <tr><td> <textarea name="body">{{$idea->body}}</textarea></td></tr>
-        <tr><td> <input id="tags" name="tags" value="{{ $idea->tagsString() }}"></td></tr>
         </table>
     </div>
     <div class="comment new-comment grid">
@@ -43,9 +42,4 @@
             <button class="ml4 mt2 uppercase"> {{__("idea.save") }}</button>
         {{ Form::close() }}
     </div>
-@endsection
-
-
-@section('scripts')
-    @include('components.js.taggableInput', ["el" => "tags", "endpoint" => "ideas", "object" => $idea])
 @endsection

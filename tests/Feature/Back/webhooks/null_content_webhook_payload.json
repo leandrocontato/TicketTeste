@@ -100,9 +100,7 @@
     "votes": 0,
     "watches": 1,
     "content": {
-      "raw": "Issue from ticket: https://handesk.revo.works/tickets/6486   \n\rBuenos días, \r\nAl crear un perfil de privilegios del back para que tenga acceso unicamente a empleados, al acceder con un usuario con esos privilegios devuelve \"error 403. No autorizado tu licencia no permite esta funcionalidad, actualiza tu plan para poder utilizarla.\" si se le añade algún privilegio más, accede sin problemas.",
       "markup": "markdown",
-      "html": "<p>Issue from ticket: <a href=\"https://handesk.revo.works/tickets/6486\" rel=\"nofollow\" class=\"ap-connect-link\">https://handesk.revo.works/tickets/6486</a>   </p>\n<p>Buenos días, \nAl crear un perfil de privilegios del back para que tenga acceso unicamente a empleados, al acceder con un usuario con esos privilegios devuelve \"error 403. No autorizado tu licencia no permite esta funcionalidad, actualiza tu plan para poder utilizarla.\" si se le añade algún privilegio más, accede sin problemas.</p>",
       "type": "rendered"
     },
     "assignee": null,

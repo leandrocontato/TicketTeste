@@ -17,7 +17,6 @@
     <div class="comment new-comment">
         <table class="maxw600 no-padding">
             <tr><td class="w20">Subject: </td>     <td><input name="title" class="w100" required/></td></tr>
-            <tr><td> {{ trans_choice('ticket.tag',2) }}</td><td colspan="4"> <input id="tags" name="tags" value="{{request('tags')}}"></td></tr>
             <tr><td> {{__('ticket.comment') }}</td><td colspan="7"><textarea name="body" required> {{ request('body') }}</textarea></td></tr>
             <tr><td> {{ __('idea.developmentEffort') }}</td><td><input name="development_effort" type="range" min="0" max="10"></td></tr>
             <tr><td> {{ __('idea.salesImpact') }}</td><td><input name="sales_impact" type="range" min="0" max="10"></td></tr>
@@ -30,9 +29,4 @@
         </table>
         {{ Form::close() }}
     </div>
-@endsection
-
-
-@section('scripts')
-    @include('components.js.taggableInput', ["el" => "tags", "endpoint" => "ideas", "object" => null])
 @endsection

@@ -34,7 +34,6 @@ class CreateIdeasFromNewEmailsTest extends TestCase
             $this->assertEquals("bruce@wayne.com", $idea->requester->email);
             $this->assertEquals("I'm batman", $idea->title);
             $this->assertEquals("Why so serious", $idea->body);
-            $this->assertEquals("email", $idea->tags->first()->name);
         });
     }
 }

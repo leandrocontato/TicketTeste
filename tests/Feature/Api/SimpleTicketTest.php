@@ -32,7 +32,6 @@ class SimpleTicketTest extends TestCase
             ],
             "title"         => "App is not working",
             "body"          => "I can't log in into the application",
-            "tags"          => ["xef"]
         ], $overrides);
     }
 
@@ -49,7 +48,6 @@ class SimpleTicketTest extends TestCase
             ],
             "title"         => "App is not working",
             "body"          => "I can't log in into the application",
-            "tags"          => ["xef"]
         ],["token" => 'the-api-token']);
 
         $response->assertStatus( Response::HTTP_CREATED );
@@ -63,7 +61,6 @@ class SimpleTicketTest extends TestCase
             });
             $this->assertEquals ( $ticket->title, "App is not working");
             $this->assertEquals ( $ticket->body, "I can't log in into the application");
-            $this->assertTrue   ( $ticket->tags->pluck('name')->contains("xef") );
             $this->assertEquals( Ticket::STATUS_NEW, $ticket->status);
 
             Notification::assertSentTo(
@@ -94,7 +91,6 @@ class SimpleTicketTest extends TestCase
             ],
             "title"         => "App <script>is not working</script> >>>",
             "body"          => "I can't log in into the application<script>alert(1)</script>",
-            "tags"          => ["xef"]
         ],["token" => 'the-api-token']);
 
         $response->assertStatus( Response::HTTP_CREATED );
@@ -108,7 +104,6 @@ class SimpleTicketTest extends TestCase
             });
             $this->assertEquals ( $ticket->title, "App is not working >>>");
             $this->assertEquals ( $ticket->body, "I can't log in into the applicationalert(1)");
-            $this->assertTrue   ( $ticket->tags->pluck('name')->contains("xef") );
             $this->assertEquals( Ticket::STATUS_NEW, $ticket->status);
 
             Notification::assertSentTo(
@@ -160,7 +155,6 @@ class SimpleTicketTest extends TestCase
             ],
             "title"         => "App is not working",
             "body"          => "I can't log in into the application",
-            "tags"          => ["xef"]
         ],["token" => 'the-api-token']);
 
         $response->assertStatus( Response::HTTP_CREATED );
@@ -178,7 +172,6 @@ class SimpleTicketTest extends TestCase
             ],
             "title"         => "App is not working",
             "body"          => "I can't log in into the application",
-            "tags"          => ["xef"]
         ],["token" => 'the-api-token']);
 
         $response->assertStatus( Response::HTTP_CREATED );

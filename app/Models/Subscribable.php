@@ -14,7 +14,7 @@ trait Subscribable
     {
         $listIds = config('services.mailchimp.tag_list_id');
 
-        return array_intersect_key($listIds, array_flip($this->tags->pluck('name')->toArray()));
+        return array_intersect_key($listIds, array_flip($this->pluck('name')->toArray()));
     }
 
     public function subscribeToMailchimp()

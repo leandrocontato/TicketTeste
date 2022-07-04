@@ -10,7 +10,6 @@
         <tr><td>Country:</td><td>    {{ $lead->country }}</td></tr>
         <tr><td>Phone:</td><td>      {{ $lead->phone }}</td></tr>
         <tr><td>Email:</td><td>      <a href="mailto:{{$lead->email}}">{{ $lead->email}}</a></td></tr>
-        <tr><td>Tags:</td><td>       {{ $lead->tagsString() }}</td></tr>
     </table>
 
     <br><br>

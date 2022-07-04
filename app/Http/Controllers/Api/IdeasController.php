@@ -28,19 +28,11 @@ class IdeasController extends ApiController
             request('requester'),
             request('title'),
             request('body'),
-            request('repository'),
-            request('tags')
+            request('repository')
         );
         $this->notifyDefault($idea);
 
         return $this->respond(['id' => $idea->id], Response::HTTP_CREATED);
-    }
-
-    public function update(Idea $idea)
-    {
-        /*$ticket->updateStatus(request('status'));
-
-        return $this->respond(['id' => $ticket->id], Response::HTTP_OK);*/
     }
 
     private function notifyDefault($ticket)

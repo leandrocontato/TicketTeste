@@ -43,7 +43,6 @@ class LeadsTest extends TestCase
             "city"        => "Gotham",
             "postal_code" => "90872",
             "company"     => "Wayne enterprises",
-            "tags"        => ["email", "xef", "email"],
         ], ["token" => 'the-api-token']);
 
         $response->assertStatus(Response::HTTP_CREATED);
@@ -58,8 +57,6 @@ class LeadsTest extends TestCase
             $this->assertEquals("Wayne manner",     $lead->address);
             $this->assertEquals("Gotham",           $lead->city);
             $this->assertEquals("90872",            $lead->postal_code);
-            $this->assertCount(2, $lead->tags);
-            $this->assertTrue( $lead->tags->pluck('name')->contains("xef"));
 
             Notification::assertSentTo( [$admin], LeadCreated::class, function ($notification, $channels) use ($lead) {
                     return $notification->lead->id === $lead->id;
@@ -78,7 +75,6 @@ class LeadsTest extends TestCase
             "email"    => "bruce@wayne.com",
             "username" => "brucewayne",
             "name"     => "Bruce Wayne",
-            "tags"     => ["email", "xef", "retail", "email"],
         ],["token" => 'the-api-token']);
 
         $response->assertStatus(Response::HTTP_CREATED);
@@ -87,25 +83,6 @@ class LeadsTest extends TestCase
             $mailChimpFake->assertSubscribed($lead->email, config('services.mailchimp.tag_list_id.xef'));
             $mailChimpFake->assertSubscribed($lead->email, config('services.mailchimp.tag_list_id.retail'));
             $mailChimpFake->assertNotSubscribed($lead->email, config('services.mailchimp.tag_list_id.flow'));
-        });
-    }
-
-    /** @test */
-    public function creating_a_lead_that_email_already_exists_only_adds_the_tags(){
-        $lead = factory(Lead::class)->create(["email" => "bruce@wayne.com"]);
-        $response = $this->post('api/leads',[
-            "email"    => "bruce@wayne.com",
-            "username" => "brucewayne",
-            "name"     => "Bruce Wayne",
-            "tags"     => ["email", "xef", "retail", "email"],
-        ],["token" => 'the-api-token']);
-
-        $response->assertStatus(Response::HTTP_CREATED);
-        $this->assertEquals(1, Lead::count() );
-        tap($lead->fresh()->tags()->pluck('name'), function($tags){
-            $this->assertTrue( $tags->contains("retail") );
-            $this->assertTrue( $tags->contains("email") );
-            $this->assertTrue( $tags->contains("xef") );
         });
     }
 }

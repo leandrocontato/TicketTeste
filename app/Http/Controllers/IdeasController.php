@@ -70,7 +70,6 @@ class IdeasController extends Controller
             'sales_impact'       => 'integer|max:10|min:0',
             'current_impact'     => 'integer|max:10|min:0',
         ]);
-        $idea = Idea::createAndNotify(request('requester'), request('title'), request('body'), request('repository'), request('tags'));
         $idea->update([
             'development_effort' => request('development_effort'),
             'sales_impact'       => request('sales_impact'),
