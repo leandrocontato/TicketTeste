@@ -1,61 +1,111 @@
 <?php
 
-namespace App\Models;
+namespace App;
 
-use Illuminate\Contracts\Auth\MustVerifyEmail;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
+use App\Authenticatable\Admin;
+use App\Authenticatable\Assistant;
+use Carbon\Carbon;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
-use Laravel\Fortify\TwoFactorAuthenticatable;
-use Laravel\Jetstream\HasProfilePhoto;
-use Laravel\Sanctum\HasApiTokens;
 
+/**
+ * @property string name
+ */
 class User extends Authenticatable
 {
-    use HasApiTokens;
-    use HasFactory;
-    use HasProfilePhoto;
     use Notifiable;
-    use TwoFactorAuthenticatable;
 
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var string[]
-     */
-    protected $fillable = [
-        'name',
-        'email',
-        'password',
-    ];
+    protected $table = 'users';
 
-    /**
-     * The attributes that should be hidden for serialization.
-     *
-     * @var array
-     */
+    protected $guarded = ['admin', 'assistant'];
+
     protected $hidden = [
-        'password',
-        'remember_token',
-        'two_factor_recovery_codes',
-        'two_factor_secret',
+        'password', 'remember_token',
     ];
 
-    /**
-     * The attributes that should be cast.
-     *
-     * @var array
-     */
-    protected $casts = [
-        'email_verified_at' => 'datetime',
-    ];
+    public function tickets()
+    {
+        return $this->hasMany(Ticket::class)->with('requester', 'user', 'team');
+    }
+
+    public function leads()
+    {
+        return $this->hasMany(Lead::class)->with('user', 'team');
+    }
+
+    public function teams()
+    {
+        return $this->belongsToMany(Team::class, 'memberships')->withPivot('admin');
+    }
+
+    public function settings()
+    {
+        return $this->hasOne(UserSettings::class)->withDefault();
+    }
+
+    public function teamsTickets()
+    {
+        return Ticket::join('memberships', 'tickets.team_id', '=', 'memberships.team_id')
+                       ->where('memberships.user_id', $this->id)->select('tickets.*');
+    }
+
+    public function teamsLeads()
+    {
+        return Lead::join('memberships', 'leads.team_id', '=', 'memberships.team_id')
+                ->where('memberships.user_id', $this->id)->select('leads.*');
+    }
+
+    public function teamsMembers()
+    {
+        return User::join('memberships', 'users.id', '=', 'memberships.user_id')
+                     ->whereIn('memberships.team_id', $this->teams->pluck('id'))->select('users.*');
+    }
+
+    public function tasks()
+    {
+        return $this->hasMany(Task::class);
+    }
+
+    public function uncompletedTasks()
+    {
+        return $this->hasMany(Task::class)->where('completed', false);
+    }
+
+    public function todayTasks()
+    {
+        return $this->hasMany(Task::class)->where('completed', false)->where('datetime', '<', Carbon::tomorrow());
+    }
 
     /**
-     * The accessors to append to the model's array form.
+     * @deprecated
      *
-     * @var array
+     * @param $notification
      */
-    protected $appends = [
-        'profile_photo_url',
-    ];
+    public static function notifyAdmins($notification)
+    {
+        Admin::notifyAll($notification);
+    }
+
+    /**
+     * @deprecated
+     *
+     * @param $notification
+     */
+    public static function notifyAssistants($notification)
+    {
+        Assistant::notifyAll($notification);
+    }
+
+    public function getTeamsTicketsAttribute()
+    {
+        return $this->teamsTickets()->get();
+    }
+
+    public function delete()
+    {
+        $this->tickets()->update(['user_id' => null]);
+        $this->leads()->update(['user_id' => null]);
+
+        return parent::delete();
+    }
 }
